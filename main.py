@@ -6,8 +6,6 @@ from typing import Any
 
 app = FastAPI()
 
-class RequestBody(BaseModel):
-    data: Any
 
 
 @app.get("/")
@@ -21,6 +19,6 @@ def read_item(item_id: int, q: Optional[str] = None):
 
 
 @app.post("/api2")
-def post_item(request_body: RequestBody):
+def post_item(request_body):
     print(request_body)
     return request_body
