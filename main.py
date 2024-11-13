@@ -9,7 +9,7 @@ app = FastAPI()
 
 db = sqlite3.connect('mydb.db')
 imlec = db.cursor()
-imlec.execute("DELETE TABLE ogrenciler")
+imlec.execute("DROP TABLE ogrenciler")
 imlec.execute("CREATE TABLE ogrenciler(isim, yas)")
 db.commit()
 
