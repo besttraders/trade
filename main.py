@@ -1,17 +1,24 @@
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from typing import Any
 import sqlite3
 
 app = FastAPI()
 
-db = sqlite3.connect('mydb.db')
-imlec = db.cursor()
-imlec.execute("DROP TABLE ogrenciler")
-imlec.execute("CREATE TABLE ogrenciler(isim, yas)")
-db.commit()
+with sqlite3.connect('mydb.db') as db:
+    cursor = db.cursor()
+    cursor.execute("DROP TABLE IF EXISTS ogrenciler")
+    cursor.execute("CREATE TABLE ogrenciler(isim TEXT, yas INTEGER)")
+    db.commit()
+    
+def get_db():
+    db = sqlite3.connect('mydb.db')
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 async def root():
@@ -23,11 +30,11 @@ def read_item(item_id: int, q: Optional[str] = None):
     return {"item_id": item_id, "q": q}
 
 @app.get("/items")
-def read_item(item_id: int, q: Optional[str] = None):
-    komut = """SELECT * FROM ogrenciler"""
-    imlec.execute(komut)
-    veriler = imlec.fetchall()
-    print(veriler)
+def read_items(db: sqlite3.Connection = Depends(get_db)):
+    cursor = db.cursor()
+    cursor.execute("SELECT isim, yas FROM ogrenciler")
+    data = cursor.fetchall()
+    return [{"isim": isim, "yas": yas} for isim, yas in data]
 
 @app.post("/api2")
 def post_item(request_body):
