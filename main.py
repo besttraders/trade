@@ -47,7 +47,7 @@ def create_random_student(db: sqlite3.Connection = Depends(get_db)):
     cursor = db.cursor()
     
     random_name = random.choice(["Ahmet", "Elif", "Mehmet", "Zeynep", "Veli", "Fatma", "Ali", "Ayşe"])
-    random_age = random.randint(18, 30)  # Age between 18 and 30
+    random_age = random.randint(18, 30)
 
     try:
         cursor.execute("INSERT INTO ogrenciler (isim, yas) VALUES (?, ?)", (random_name, random_age))
