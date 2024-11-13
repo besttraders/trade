@@ -20,5 +20,5 @@ def read_item(item_id: int, q: Optional[str] = None):
 
 @app.post("/api2")
 def post_item(request_body):
-    print(request_body)
+    print(request_body + "test")
     return request_body
